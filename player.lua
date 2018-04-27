@@ -13,6 +13,7 @@ local function moveplayer(player,x,y,dt,world)
 	local actualX, actualY, cols, len = world:check(player, player.x+x, player.y+y, playerFilter)
 	for i=1,len do
     	local other = cols[i].other
+    	print(other.properties.collidable)
     	if other.name == 'Box' then
     		local actualX, actualY, cols, len = world:move(other, other.x + x, other.y + y,playerFilter)
   			other.x, other.y = actualX, actualY
@@ -91,6 +92,7 @@ function player:draw()
     love.graphics.draw(atlas.img,atlas.player,self.x, self.y,0,self.sx,self.sy)
 end
 
+--[[
 function player:checkmap(world)
 	local actualX, actualY, cols, len = world:check(self, self.x + 1, self.y, playerFilter)
 	for i=1,len do
@@ -117,11 +119,12 @@ function player:outsideofmap(mapsize,tilesize,world)
 	end
 	return false
 end
+]]--
 
 playerFilter = function(item, other)
 	if other.name == 'Trigger' then
 		return 'cross'
-	elseif other.name == 'Door' and other.active == false then
+	elseif other.name == 'Door' and other.active == true then
 		return 'cross'
 	end
 	return 'touch'

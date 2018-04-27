@@ -6,7 +6,9 @@ local go = require 'gameobjects'
 
 local game = {}
 
-local mapsize = {x=24,y=18}
+--FEL MED tilesize/18 OM TILESIZE ÄR ANNAR ÄN 18 (mapsize.t)
+--TA BORT ALL SCALE och bygg om bygg rätt
+local mapsize = {x=24,y=18,t=16}
 local width, height = love.graphics.getDimensions()
 local tilesize = func.getTileSize(width,height,mapsize) 
 local world = bump.newWorld(tilesize)
@@ -18,16 +20,16 @@ local maps = nil
 local objects = nil
 
 function game.load()
-    maps = {sti('maps/level0.lua', {'bump'}),sti('maps/level02.lua', {'bump'})}
+    maps = {sti('maps/level100.lua', {'bump'}),sti('maps/level02.lua', {'bump'})}
     --local layer = maps[1]:addCustomLayer("Sprites", 10)
     local p1 = func.getmapgobjects(maps[1],'P1')[1]
     local p2 = func.getmapgobjects(maps[2],'P2')[1]
     players = {
-        player.new('p1',p1.x*(tilesize/18)+tx,p1.y*(tilesize/18)+ty,tilesize,tilesize,tilesize*3,'w','a','s','d','q','r',true,-1), 
-        player.new('p2',p2.x*(tilesize/18)+tx,p2.y*(tilesize/18)+ty,tilesize,tilesize,tilesize*3,'up','left','down','right','p','i',false,-1)
+        player.new('p1',p1.x*(tilesize/mapsize.t)+tx,p1.y*(tilesize/mapsize.t)+ty,tilesize,tilesize,tilesize*3,'w','a','s','d','q','r',true,-1), 
+        player.new('p2',p2.x*(tilesize/mapsize.t)+tx,p2.y*(tilesize/mapsize.t)+ty,tilesize,tilesize,tilesize*3,'up','left','down','right','p','i',false,-1)
     }
-    maps[1]:bump_init(world,tx,ty,tilesize/18,tilesize/18)
-    maps[2]:bump_init(world,tx,ty,tilesize/18,tilesize/18)
+    maps[1]:bump_init(world,tx,ty,tilesize/mapsize.t,tilesize/mapsize.t)
+    maps[2]:bump_init(world,tx,ty,tilesize/mapsize.t,tilesize/mapsize.t)
     world:add(players[1],players[1].x,players[1].y,players[1].w,players[1].h)
     world:add(players[2],players[2].x,players[2].y,players[2].w,players[2].h)
     objects = go.new(maps,tilesize,tx,ty)
@@ -50,13 +52,15 @@ function game.draw()
     myShader:send('color3', {77,47,117,255})
     myShader:send('color4', {48,28,76,255})
     love.graphics.setShader(myShader)
-    maps[1]:draw(tx/(tilesize/18),ty/(tilesize/18),tilesize/18,tilesize/18)
-    maps[2]:draw(tx/(tilesize/18),ty/(tilesize/18),tilesize/18,tilesize/18)
+    maps[1]:draw(tx/(tilesize/mapsize.t),ty/(tilesize/mapsize.t),tilesize/mapsize.t,tilesize/mapsize.t)
+    maps[2]:draw(tx/(tilesize/mapsize.t),ty/(tilesize/mapsize.t),tilesize/mapsize.t,tilesize/mapsize.t)
     players[1]:draw()
     players[2]:draw()
     love.graphics.setShader()
     love.graphics.print(players[2].x..' '..players[2].y, 0, 0)
     objects:draw()
+    maps[1]:bump_draw(world)
+    maps[2]:bump_draw(world)
 end
 
 
